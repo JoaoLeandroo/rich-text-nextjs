@@ -1,6 +1,8 @@
 "use client";
 import RichTextEditor from "./RichTextEditor";
+import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { v4 as uuidv4 } from 'uuid';
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -33,6 +35,9 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const RichText = () => {
+
+    const [responses, setResponses] = useState<{ id: string; content: string }[]>([]);
+
     const form = useForm({
         mode: "onTouched",
         resolver: zodResolver(formSchema),
@@ -43,6 +48,18 @@ const RichText = () => {
     
       const onSubmit: SubmitHandler<FormData> = (data) => {
         console.log(data);
+
+        const newResponse = {
+          id: uuidv4(),
+          content: data.post,  // Adiciona o conteúdo postado
+        };
+    
+        // Atualiza o estado com o novo conteúdo
+        setResponses((prevResponses) => [...prevResponses, newResponse]);
+    
+        // Reseta o campo do formulário após o envio
+        form.reset();
+
       };
     
       return (
@@ -65,9 +82,17 @@ const RichText = () => {
                   </FormItem>
                 )}
               />
-              <Button className="mt-4">Submit</Button>
+              <Button className="mt-4">Registrar</Button>
             </form>
           </Form>
+
+          <div className="mt-10">
+          {responses.map((response) => (
+            <div key={response.id} className="mb-2 border-b pb-2">
+              <div dangerouslySetInnerHTML={{ __html: response.content }} />
+            </div>
+          ))}
+          </div>
         </div>
       );
 };
