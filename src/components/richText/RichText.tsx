@@ -88,7 +88,7 @@ const RichText = () => {
 
           <div className="mt-10">
           {responses.map((response) => (
-            <div key={response.id} className="mb-2 border-b pb-2">
+            <div key={response.id} className="p-3 mt-5 bg-neutral-800 rounded shadow-md text-white">
               <div dangerouslySetInnerHTML={{ __html: response.content }} />
             </div>
           ))}
